@@ -1,9 +1,15 @@
-# Homework Repository :thumbsup:
+# Homework Repository
+:warning:**_ENTER AT YOU OWN RISK_**:heavy_exclamation_mark:
+All files contained in this repository are likely just a jumble of nonesense.
 
 ## Description
-This is my homework repository. I will use this space to organize all of my files (data, scripts, output, etc.) for the Programming with Data class.
-***
+This is my homework repository. During the spring semester of 2021, I will use this space to organize all of my files (data, scripts, output, etc.) for the Programming with Data class taught by Dr. Brenton Wiernik at the University of South Florida.
+
 
 ## About Me
-**Hello** :heavy_exclamation_mark: My name is Lendi Nicole Joy. I am a sixth year in the clinical program. I am taking this course because I think/hope it will be *fun*! I've used R in the past for meta analysis and played around with some EFA, CFA, and IRT models, but when the pandemic started, R became my primary program. I have used R for SEM models and I have made attempts at learning
-Learning a computer language is something that I have wanted to do for a while and 
+Hello, my name is **Lendi Nicole Joy** and I'm excited about this course and I think/hope it will be *fun*! I've used R in the past for meta analysis and played around with some measurement models. Then when the pandemic started, R became my primary program for all my data analyses. I've run some [SEM](https://www.theanalysisfactor.com/four-types-sem/) models and made ~~many failed~~ attempts at creating visual representations of my data. There is so much that you can do with R and I have always wanted to learn a computer language, but never made the time. So, I figured this class would be the perfect opportunity to make myself learn something useful.
+
+## Homework Assignments
+### Assignment 01: Tools for data analytic work
+- [x] Exercise 1: Edit README.md
+- [] Exercise 2: RMarkdown for Dataset exploration
