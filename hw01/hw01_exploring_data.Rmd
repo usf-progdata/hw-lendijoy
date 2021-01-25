@@ -1,0 +1,20 @@
+First we need to load the psych package and the data. 
+```{r warning=FALSE}
+library(psych)
+```
+(Note: I turned off warning messages because I am running one patch behind on R and the psych package was updated after the most recent patch. But R version 4.0.4 comes out 2021-02-15, I will wait.)
+
+Now let's load the data and take a look at descriptives for the variables.
+```{r}
+data(bfi)
+describe(bfi)
+```
+
+Let's add some value labels for our categorical variables.
+Gender:    1 = male, 2 = female 
+Education: 1 = HS, 2 = finished HS, 3 = some college, 4 = college graduate 5 = graduate degree
+
+```{r}
+bfi$gender<- factor(bfi$gender, levels = c(1,2), labels = c("male", "female"))
+bfi$education<- factor(bfi$education, levels = c(1,2,3,4,5), labels = c("HS", "finished HS", "some college", "college grad", "grad degree"))
+```
