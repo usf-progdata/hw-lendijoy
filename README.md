@@ -12,4 +12,4 @@ Hello, my name is **Lendi Nicole Joy** and I'm excited about this course and I t
 ## Homework Assignments
 ### Assignment 01: Tools for data analytic work
 - [x] Exercise 1: Edit README.md
-- [] Exercise 2: RMarkdown for Dataset exploration
+- [ ] Exercise 2: RMarkdown for Dataset exploration
