@@ -1,20 +1,61 @@
-First we need to load the psych package and the data. 
+---
+title: "HW01 Exploring Data"
+author: "Lendi N. Joy"
+date: "1/25/2021"
+output: html_document
+keep_md: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+### Load and Examine
+First we need to load the psych package and the data. Let's also look at the structure of the data at this time.
 ```{r warning=FALSE}
 library(psych)
-```
-(Note: I turned off warning messages because I am running one patch behind on R and the psych package was updated after the most recent patch. But R version 4.0.4 comes out 2021-02-15, I will wait.)
-
-Now let's load the data and take a look at descriptives for the variables.
-```{r}
 data(bfi)
-describe(bfi)
+str(bfi)
 ```
+Alright, 2,800 cases and 28 variables. 
 
-Let's add some value labels for our categorical variables.
-Gender:    1 = male, 2 = female 
-Education: 1 = HS, 2 = finished HS, 3 = some college, 4 = college graduate 5 = graduate degree
-
+### Add Value Labels
+We saw that gender and education are coded as integer variables, so let's add some value labels.  
+**gender**:    1 = male, 2 = female   
+**education**: 1 = HS, 2 = finished HS, 3 = some college, 4 = college graduate 5 = graduate degree
 ```{r}
 bfi$gender<- factor(bfi$gender, levels = c(1,2), labels = c("male", "female"))
 bfi$education<- factor(bfi$education, levels = c(1,2,3,4,5), labels = c("HS", "finished HS", "some college", "college grad", "grad degree"))
 ```
+
+### Check Missing Data
+We also saw that there were some missing values when we looked at the structure. Let's find out how many complete cases there are in the dataset.
+```{r}
+sum(complete.cases(bfi)) #Complete cases
+sum(!complete.cases(bfi)) #Incomplete cases
+```
+
+### Clean it up
+It's probably not good practice to just throw out data, but let's do it anyway and keep only complete cases.
+```{r}
+x <- na.omit(bfi)
+```
+
+
+Interestingly, there are some participants under 18.   
+Let's find out how many now that we are only including complete cases.
+```{r}
+sum(x$age < 18)
+```
+OK, only 51. Let's pretend that we have parental consent and keep them in.
+
+### Summarize
+Let's get a summary of our complete data.
+```{r}
+summary(x)
+```
+
+Lastly, let's take a look at education level by gender.
+```{r}
+table(x$gender, x$education)
+```
+
