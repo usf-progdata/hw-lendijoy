@@ -58,4 +58,3 @@ Lastly, let's take a look at education level by gender.
 ```{r}
 table(x$gender, x$education)
 ```
-
