@@ -1,3 +1,7 @@
+<!-- Very nicely done! Just a few comments below. -->
+
+<!-- Please delete branches after you merge them back into master. This keeps your repo tidy. -->
+
 # Homework Repository
 
 :warning:***ENTER AT YOU OWN RISK***:heavy_exclamation_mark: All files contained in this repository are likely just a jumble of nonsense.
