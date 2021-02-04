@@ -3,6 +3,7 @@ title: "s03a Worksheet: Intro to `ggplot2`"
 output: 
   html_document:
     keep_md: true
+    theme: paper
 ---
 
 ## Preliminary
@@ -49,8 +50,8 @@ Fill in the seven grammar components for this plot.
 | Grammar Component     | Specification |
 |-----------------------|---------------|
 | __data__              | `gapminder` |
-| __aesthetic mapping__ | FILL_THIS_IN |
-| __geometric object__  | FILL_THIS_IN |
+| __aesthetic mapping__ | `ggplot(aes(continent))` |
+| __geometric object__  | `geom_bar()` |
 | scale                 | FILL_THIS_IN |
 | statistical transform | FILL_THIS_IN |
 | coordinate system     | FILL_THIS_IN |
@@ -84,8 +85,8 @@ Produce a line chart showing the concentration over time. Specifically, the plot
 Fill in the blanks to obtain the plot:
 
 ```{r, fig.width = 5, fig.height = 2}
-ggplot(FILL_THIS_IN, aes(FILL_THIS_IN, FILL_THIS_IN)) +
-  FILL_THIS_IN()
+ggplot(mauna, aes(x= month, y= conc)) +
+  geom_line()
 ```
 
 ### 2(b)
