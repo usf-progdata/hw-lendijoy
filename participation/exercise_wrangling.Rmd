@@ -18,8 +18,8 @@ Load the `gapminder` and `tidyverse` packages.
 
 ```{r load packages}
 # load your packages here:
-library(FILL_THIS_IN)
-library(FILL_THIS_IN)
+library(gapminder)
+library(dplyr)
 ```
     
 
@@ -29,7 +29,7 @@ library(FILL_THIS_IN)
 the `gapminder` data, in that order.
 
 ```{r}
-select(gapminder, FILL_THIS_IN)
+select(gapminder, year, lifeExp, country)
 ```
 
 2. Select all variables, from `country` to `lifeExp`.
@@ -39,28 +39,27 @@ select(gapminder, FILL_THIS_IN)
 select(gapminder, country, continent, year, lifeExp)
 
 # Do it shorter with `:` :
-select(gapminder, FILL_THIS_IN)
+select(gapminder, country:lifeExp)
 ```
 
 3. Select all variables, except `lifeExp`.
 
 ```{r}
-select(gapminder, FILL_THIS_IN)
+select(gapminder, -lifeExp)
 ```
 
 4. Put `continent` first. Hint: use the `everything()` function.
 
 ```{r}
-select(gapminder, FILL_THIS_IN, FILL_THIS_IN)
+select(gapminder, continent, everything())
+
 ```
 
 5. Rename `continent` to `cont`.
 
 ```{r}
 # compare
-select(gapminder, FILL_THIS_IN)
-
-rename(gapminder, FILL_THIS_IN)
+rename(gapminder, cont=continent)
 ```
 
 
@@ -69,19 +68,19 @@ rename(gapminder, FILL_THIS_IN)
 1. Order by year.
 
 ```{r}
-arrange(gapminder, FILL_THIS_IN)
+arrange(gapminder, year)
 ```
 
 2. Order by year, in descending order.
 
 ```{r}
-arrange(gapminder, FILL_THIS_IN)
+arrange(gapminder, desc(year))
 ```
 
 3. Order by year, then by life expectancy.
 
 ```{r}
-arrange(gapminder, FILL_THIS_IN, FILL_THIS_IN)
+arrange(gapminder, year, lifeExp)
 ```
 
 
@@ -94,6 +93,8 @@ Do `select()` Task 1 and `arrange()` Task 3 together with a pipe.
 Select `year`, `lifeExp`, `country` from the `gapminder`, then arrange in order by year and life expectancy.
 
 ```{r}
+select(gapminder, year, lifeExp, country) %>% 
+  arrange(year, lifeExp)
 
 ```
 
@@ -106,21 +107,21 @@ Select `year`, `lifeExp`, `country` from the `gapminder`, then arrange in order 
 
 ```{r}
 gapminder %>%
-  filter(FILL_THIS_IN)
+  filter(pop >100000000)
 ```
 
 2. Only keep data _from Asia_ with population greater than 100 million.
 
 ```{r}
 gapminder %>%
-  filter(FILL_THIS_IN)
+  filter(continent=="Asia",  pop>100000000)
 ```
 
 3. Only keep data _from the countries Brazil and China_ with population greater than 100 million.
 
 ```{r}
 gapminder %>%
-  filter(FILL_THIS_IN)
+  filter(country=="Brazil" | country=="China", pop>100000000)
 ```
 
 ## `mutate()`
