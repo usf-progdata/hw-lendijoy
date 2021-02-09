@@ -70,18 +70,27 @@ Pick two quantitative variables to explore.
   * Include whatever staistics you feel appropriate (mean, median sd, range, etc.).
 2. Make a scatterplot of these variables using ggplot().
 ```{r}
-palmerpenguins::penguins %>% 
+palmerpenguins::penguins%>% 
   summarize(Flipper_mean=mean(flipper_length_mm, na.rm=TRUE), 
             flipper_sd=sd(flipper_length_mm, na.rm=TRUE),
             mass_mean=mean(body_mass_g, na.rm=TRUE),
             mas_sd=sd(body_mass_g, na.rm=TRUE))
+ggplot(palmerpenguins::penguins, aes(body_mass_g, flipper_length_mm))+
+  geom_point()
 ```
 
 ## 2.2
 Pick one categorical variable and one quantitative variable to explore.
 1. Make a summary table giving the sample size (hint: n()) and descriptive statistics for the quantitative variable by group.
 2. Make one or more useful plots to visualize these variables.
-
+```{r}
+palmerpenguins::penguins%>% 
+  group_by(species, island, year) %>% 
+  summarize(Flipper_mean=mean(flipper_length_mm, na.rm=TRUE), 
+            flipper_sd=sd(flipper_length_mm, na.rm=TRUE),
+            mass_mean=mean(body_mass_g, na.rm=TRUE),
+            mas_sd=sd(body_mass_g, na.rm=TRUE), n())
+```
 
 #Bonus Exercise: Recycling (Optional)
 Evaluate this code and describe the result. The goal was to get the data for Rwanda and Afghanistan. Does this work? Why or why not? If not, what is the correct way to do this?
