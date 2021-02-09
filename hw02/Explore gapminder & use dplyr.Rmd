@@ -84,13 +84,13 @@ Pick one categorical variable and one quantitative variable to explore.
 2. Make one or more useful plots to visualize these variables.
 ```{r}
 palmerpenguins::penguins%>% 
-  group_by(species, island, year) %>% 
-  summarize(flipper_mean=mean(flipper_length_mm, na.rm=TRUE), 
-            flipper_sd=sd(flipper_length_mm, na.rm=TRUE),
-            mass_mean=mean(body_mass_g, na.rm=TRUE),
+  group_by(species) %>% 
+  summarize(mass_mean=mean(body_mass_g, na.rm=TRUE),
             mas_sd=sd(body_mass_g, na.rm=TRUE), n()) %>% 
-  ggplot(aes(mass_mean, flipper_mean))+
-  geom_point() %>% 
+  ungroup()
+palmerpenguins::penguins%>% 
+ggplot(aes(body_mass_g))+
+  geom_boxplot(aes(color=species)) 
 ```
 
 #Bonus Exercise: Recycling (Optional)
