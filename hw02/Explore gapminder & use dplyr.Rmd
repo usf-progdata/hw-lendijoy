@@ -47,8 +47,7 @@ _Hint: you might find the max() function useful here._
 ```{r}
 gapminder %>% 
   group_by(country) %>% 
-  filter(gdpPercap== max(gdpPercap)) %>% 
-  ungroup() 
+  filter(gdpPercap== max(gdpPercap))
 ```
 
 ## 1.5
@@ -86,10 +85,12 @@ Pick one categorical variable and one quantitative variable to explore.
 ```{r}
 palmerpenguins::penguins%>% 
   group_by(species, island, year) %>% 
-  summarize(Flipper_mean=mean(flipper_length_mm, na.rm=TRUE), 
+  summarize(flipper_mean=mean(flipper_length_mm, na.rm=TRUE), 
             flipper_sd=sd(flipper_length_mm, na.rm=TRUE),
             mass_mean=mean(body_mass_g, na.rm=TRUE),
-            mas_sd=sd(body_mass_g, na.rm=TRUE), n())
+            mas_sd=sd(body_mass_g, na.rm=TRUE), n()) %>% 
+  ggplot(aes(mass_mean, flipper_mean))+
+  geom_point() %>% 
 ```
 
 #Bonus Exercise: Recycling (Optional)
