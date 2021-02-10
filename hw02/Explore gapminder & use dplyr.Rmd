@@ -21,7 +21,7 @@ library(dplyr)
 ## 1.1
 Use filter() to subset the gapminder data to three countries of your choice in the 1970’s.
 ```{r}
-filter(gapminder, country=="Brazil" | country=="China" | country=="Niger", year>=1970&year<=1979)
+filter(gapminder, country %in% c("Brazil","China","Niger"), year>=1970&year<=1979)
 ```
 
 ## 1.2
@@ -46,6 +46,7 @@ Filter gapminder so that it shows the max GDP per capita experienced by each cou
 _Hint: you might find the max() function useful here._
 ```{r}
 gapminder %>% 
+  select(country, gdpPercap) %>% 
   group_by(country) %>% 
   filter(gdpPercap== max(gdpPercap))
 ```
@@ -57,7 +58,9 @@ gapminder %>%
   filter(country == "Canada") %>%  
   ggplot(aes(lifeExp, gdpPercap)) +
   geom_point()+
-  scale_y_log10(labels = scales::comma_format())
+  scale_y_log10("GDP per Capita", labels = scales::dollar_format(largest_with_cents = 1)) +
+  xlab('Life Expectancy') +
+  ggtitle("Canada's Life Expectancy by GDP per Capita")
 ```
 
 #Exercise 2: Explore two variables with dplyr and ggplot2
@@ -88,9 +91,14 @@ palmerpenguins::penguins%>%
             mas_sd=sd(body_mass_g, na.rm=TRUE), n()) %>% 
   ungroup()
 palmerpenguins::penguins%>% 
-ggplot(aes(body_mass_g))+
-  geom_boxplot(aes(color=species)) 
-ggplot()
+ggplot(aes(species, body_mass_g, color= species))+
+  geom_boxplot() +
+scale_color_viridis_d() +
+    geom_jitter() +
+    theme(legend.position="none") +
+    ggtitle("Penguin Body Mass") +
+    xlab("Species") +
+  ylab("Body Mass (g)")
 ```
 
 #Bonus Exercise: Recycling (Optional)
