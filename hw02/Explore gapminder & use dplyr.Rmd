@@ -70,10 +70,9 @@ Pick two quantitative variables to explore.
 2. Make a scatterplot of these variables using ggplot().
 ```{r}
 palmerpenguins::penguins%>% 
-  summarize(Flipper_mean=mean(flipper_length_mm, na.rm=TRUE), 
-            flipper_sd=sd(flipper_length_mm, na.rm=TRUE),
-            mass_mean=mean(body_mass_g, na.rm=TRUE),
-            mas_sd=sd(body_mass_g, na.rm=TRUE))
+  summarize(across(c(flipper_length_mm, body_mass_g),
+            list(mean=mean, sd=sd), na.rm=TRUE))
+    
 ggplot(palmerpenguins::penguins, aes(body_mass_g, flipper_length_mm))+
   geom_point()
 ```
@@ -91,6 +90,7 @@ palmerpenguins::penguins%>%
 palmerpenguins::penguins%>% 
 ggplot(aes(body_mass_g))+
   geom_boxplot(aes(color=species)) 
+ggplot()
 ```
 
 #Bonus Exercise: Recycling (Optional)
