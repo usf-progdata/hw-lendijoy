@@ -43,8 +43,9 @@ gapminder %>%
 ```
 
 ## 1.4
-Filter gapminder so that it shows the max GDP per capita experienced by each country.
-_Hint: you might find the max() function useful here._
+Filter gapminder so that it shows the max GDP per capita experienced by each country.  
+
+Hint: you might find the max() function useful here.
 ```{r}
 gapminder %>% 
   select(country, gdpPercap) %>% 
@@ -61,16 +62,17 @@ gapminder %>%
   geom_point()+
   scale_y_log10("GDP per Capita", labels = scales::dollar_format(largest_with_cents = 1)) +
   xlab('Life Expectancy') +
-  ggtitle("Canada's Life Expectancy by GDP per Capita")
+  ggtitle("Canada's Life Expectancy based on GDP per Capita")
 ```
 
-#Exercise 2: Explore two variables with dplyr and ggplot2
-Use palmerpenguins::penguins or another dataset of your choice. _(Check out a dataset from the datasets R package if you want!)_
+# Exercise 2: Explore two variables with dplyr and ggplot2
+Use palmerpenguins::penguins or another dataset of your choice. (Check out a dataset from the datasets R package if you want!)
 
-##2.1
-Pick two quantitative variables to explore.
+## 2.1
+Pick two quantitative variables to explore.  
+
 1. Make a summary table of descriptive statistics for these variables using summarize().
-  * Include whatever staistics you feel appropriate (mean, median sd, range, etc.).
+   * Include whatever staistics you feel appropriate (mean, median sd, range, etc.).
 2. Make a scatterplot of these variables using ggplot().
 ```{r}
 palmerpenguins::penguins%>% 
@@ -78,11 +80,15 @@ palmerpenguins::penguins%>%
             list(mean=mean, sd=sd), na.rm=TRUE))
     
 ggplot(palmerpenguins::penguins, aes(body_mass_g, flipper_length_mm))+
-  geom_point()
+  geom_point() +
+    ggtitle("Penguin Body Mass by Flipper Length") +
+    xlab("Body Mass (g)") +
+  ylab("Flipper Length (mm)")
 ```
 
 ## 2.2
 Pick one categorical variable and one quantitative variable to explore.
+
 1. Make a summary table giving the sample size (hint: n()) and descriptive statistics for the quantitative variable by group.
 2. Make one or more useful plots to visualize these variables.
 ```{r}
