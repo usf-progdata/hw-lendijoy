@@ -62,7 +62,7 @@ gapminder %>%
   geom_point()+
   scale_y_log10("GDP per Capita", labels = scales::dollar_format(largest_with_cents = 1)) +
   xlab('Life Expectancy') +
-  ggtitle("Canada's Life Expectancy based on GDP per Capita")
+  ggtitle("Canada's Life Expectancy by GDP per Capita")
 ```
 
 # Exercise 2: Explore two variables with dplyr and ggplot2
@@ -95,12 +95,12 @@ Pick one categorical variable and one quantitative variable to explore.
 palmerpenguins::penguins%>% 
   group_by(species) %>% 
   summarize(mass_mean=mean(body_mass_g, na.rm=TRUE),
-            mas_sd=sd(body_mass_g, na.rm=TRUE), n()) %>% 
-  ungroup()
+            mas_sd=sd(body_mass_g, na.rm=TRUE), N=n()) 
+
 palmerpenguins::penguins%>% 
-ggplot(aes(species, body_mass_g, color= species))+
+ggplot(aes(species, body_mass_g, fill=species))+
   geom_boxplot() +
-scale_color_viridis_d() +
+scale_fill_viridis_d() +
     geom_jitter() +
     theme(legend.position="none") +
     ggtitle("Penguin Body Mass") +
@@ -108,10 +108,10 @@ scale_color_viridis_d() +
   ylab("Body Mass (g)")
 ```
 
-#Bonus Exercise: Recycling (Optional)
+# Bonus Exercise: Recycling (Optional)
 Evaluate this code and describe the result. The goal was to get the data for Rwanda and Afghanistan. Does this work? Why or why not? If not, what is the correct way to do this?
 
-filter(gapminder, country == c("Rwanda", "Afghanistan"))
+`filter(gapminder, country == c("Rwanda", "Afghanistan"))`
 
 
 The above code would not work as written because it is requesting that R find an object called 'country' within the environment that is exactly equal to c("Rwanda", "Afghanistan"). Instead, country is a vector within the object 'gapminder'. The correct way to filter the data for Rwanda and Afghanistan would be as follows: `filter(gapminder, country %in% c("Rwanda" and "Afghanistan")).` This tells R to filter from the 'gapminer' object the elements "Rwanda" and "Afghanistan" within the vector 'country'.
