@@ -106,3 +106,5 @@ Evaluate this code and describe the result. The goal was to get the data for Rwa
 
 filter(gapminder, country == c("Rwanda", "Afghanistan"))
 
+
+The above code would not work as written because it is requesting that R find an object called 'country' within the environment that is exactly equal to c("Rwanda", "Afghanistan"). Instead, country is a vector within the object 'gapminder'. The correct way to filter the data for Rwanda and Afghanistan would be as follows: `filter(gapminder, country %in% c("Rwanda" and "Afghanistan")).` This tells R to filter from the 'gapminer' object the elements "Rwanda" and "Afghanistan" within the vector 'country'.
