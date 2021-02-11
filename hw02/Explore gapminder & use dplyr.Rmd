@@ -2,8 +2,9 @@
 title: "Explore gapminder & use dplyr"
 author: "Lendi N. Joy"
 date: "2/9/2021"
-output: html_document
-keep_md: true
+output: 
+  html_document:
+    keep_md: true
 ---
 
 ```{r setup, include=FALSE}
