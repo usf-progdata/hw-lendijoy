@@ -16,7 +16,7 @@ library(gapminder)
 library(dplyr)
 ```
 
-###Exercise 1: Basic dplyr
+### Exercise 1: Basic dplyr
 
 ## 1.1
 Use filter() to subset the gapminder data to three countries of your choice in the 1970’s.
@@ -28,6 +28,7 @@ filter(gapminder, country %in% c("Brazil","China","Niger"), year>=1970&year<=197
 Use the pipe operator %>% to select “country” and “gdpPercap” from your filtered dataset in 1.1.
 ```{r}
 gapminder %>% 
+  filter(country %in% c("Brazil","China","Niger"), year>=1970&year<=1979) %>% 
   select(country, gdpPercap)
 ```
 
