@@ -30,7 +30,7 @@ Use the pipe operator %>% to select “country” and “gdpPercap” from your 
 ```{r}
 gapminder %>% 
   filter(country %in% c("Brazil","China","Niger"), year>=1970&year<=1979) %>% 
-  select(country, gdpPercap)
+  select(country, gdpPercap) 
 ```
 
 ## 1.3
