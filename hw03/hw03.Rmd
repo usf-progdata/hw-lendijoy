@@ -1,0 +1,30 @@
+# Homework 03
+
+You will analyze data looking at the relationship between **green reputation** and three personality traits--**compassion**, **intellectual curiosity**, and **openness to experiences**.
+The dataset includes data from **students** and **non-students**.
+
+```{r}
+dictionary <- readr::read_csv("green_dictionary.csv")
+green_data <- readr::read_csv("green_data.csv")
+library(dplyr)
+```
+
+For your assignment, do the following.
+
+  1. Inspect the item responses (e.g., with graphs or by summarizing distinct values). 
+     Is anything unusual?
+```{r}
+summary(green_data)
+```
+  2. Compute total scores for the four scales. 
+     Recode variables as needed.
+  3. Rescale the variables so that they go from 0-100 instead of the original range.
+     Name the recaled variables `*_pomp`.
+  4. Make plots that illustrate the distributions of the 4 POMP-scored variables.
+  5. Make scatterplots showing the relationships between **green reputation** and each personality trait.
+     Include trend lines for **students** and **non-students**.
+     What do these plots show?
+  6. Compare **green reputation** for students and non-students using a **rainfall plot** (bar + density + data points).
+  7. Compute a summary table of means, SDs, medians, minima, and maxima for the four total scores for students and non-students.
+  
+In your assignment, prepare an RMarkdown file that includes both the coding and (for 4-7) narrative descriptions of your results.
