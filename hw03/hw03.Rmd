@@ -3,6 +3,7 @@
 You will analyze data looking at the relationship between **green reputation** and three personality traits--**compassion**, **intellectual curiosity**, and **openness to experiences**.
 The dataset includes data from **students** and **non-students**.
 
+<<<<<<< HEAD
 Load the data.
 ```{r}
 dictionary <- readr::read_csv("green_dictionary.csv")
@@ -11,6 +12,11 @@ green_data <- readr::read_csv("green_data.csv")
 
 Load necessary libraries.
 ```{r}
+=======
+```{r}
+dictionary <- readr::read_csv("green_dictionary.csv")
+green_data <- readr::read_csv("green_data.csv")
+>>>>>>> 89dd88b575bcfe1c97bb300e478ef3bca60148c9
 library(dplyr)
 ```
 
@@ -21,6 +27,7 @@ For your assignment, do the following.
 ```{r}
 summary(green_data)
 ```
+<<<<<<< HEAD
 Several variables appear to have missing values coded as -99, so we will remove those.
 
 ```{r}
@@ -45,6 +52,12 @@ green_data_comp <- green_data %>%
 
 ```
      
+=======
+  2. Compute total scores for the four scales. 
+     Recode variables as needed.
+  3. Rescale the variables so that they go from 0-100 instead of the original range.
+     Name the recaled variables `*_pomp`.
+>>>>>>> 89dd88b575bcfe1c97bb300e478ef3bca60148c9
   4. Make plots that illustrate the distributions of the 4 POMP-scored variables.
   5. Make scatterplots showing the relationships between **green reputation** and each personality trait.
      Include trend lines for **students** and **non-students**.
