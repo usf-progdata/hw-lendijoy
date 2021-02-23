@@ -21,10 +21,30 @@ For your assignment, do the following.
 ```{r}
 summary(green_data)
 ```
+Several variables appear to have missing values coded as -99, so we will remove those.
+
+```{r}
+green_data <- na_if(green_data, "-99") 
+summary(green_data)
+```
+
   2. Compute total scores for the four scales. 
      Recode variables as needed.
+```{r}
+reverse <- function(x) (6 - x)
+green_data_comp <- green_data %>% 
+   rowwise() %>% 
+  mutate(across(c(green2, comp6:comp10, intel7:intel10, open7:open10), reverse)) %>% 
+  mutate(green_mean = mean(c_across(starts_with("g")), na.rm = TRUE), comp_mean = mean(c_across(starts_with("c")), na.rm = TRUE), intel_mean = mean(c_across(intel1:intel10), na.rm = TRUE), open_mean = mean(c_across(starts_with("o")), na.rm = TRUE)) %>% 
+  ungroup()
+```
+
   3. Rescale the variables so that they go from 0-100 instead of the original range.
      Name the recaled variables `*_pomp`.
+```{r}
+
+```
+     
   4. Make plots that illustrate the distributions of the 4 POMP-scored variables.
   5. Make scatterplots showing the relationships between **green reputation** and each personality trait.
      Include trend lines for **students** and **non-students**.
