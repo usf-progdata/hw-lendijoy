@@ -3,16 +3,15 @@ title: "Explore gapminder & use dplyr"
 author: "Lendi N. Joy"
 date: "2/9/2021"
 output: 
-  html_document:
-    keep_md: true
+  github_document: default
+  html_document: default
 ---
+
+<!-- BMW: Do your output like this, then knit twice. -->
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-```
-### Load Necessary Libraries 
-```{r warning=FALSE}
-library(ggplot2)
+library(ggplot2) # Put your library() calls in the setup chunk
 library(gapminder)
 library(dplyr)
 ```
@@ -20,70 +19,95 @@ library(dplyr)
 ### Exercise 1: Basic dplyr
 
 ## 1.1
+
+<!-- BMW: In markdown, you need blank lines between paragraphs. A single line break is ignored. -->
+
 Use filter() to subset the gapminder data to three countries of your choice in the 1970’s.
+
 ```{r}
-filter(gapminder, country %in% c("Brazil","China","Niger"), year>=1970&year<=1979)
+filter(gapminder, country %in% c("Brazil","China","Niger"), year >= 1970 & year <= 1979)
 ```
 
+<!-- BMW: For readability, put spaces around operators like <= -->
+
 ## 1.2
+
 Use the pipe operator %>% to select “country” and “gdpPercap” from your filtered dataset in 1.1.
+
 ```{r}
 gapminder %>% 
-  filter(country %in% c("Brazil","China","Niger"), year>=1970&year<=1979) %>% 
+  filter(country %in% c("Brazil","China","Niger"), year >= 1970 & year <= 1979) %>% 
   select(country, gdpPercap) 
 ```
 
 ## 1.3
+
 Make a new variable in gapminder for the change in life expectancy from the previous measurement. Filter this table to show all of the entries that have experienced a drop in life expectancy.
 
 Hint: you might find the lag() or diff() functions useful.
+
 ```{r}
 gapminder %>% 
-  mutate(lifeExp_change = lifeExp-lag(lifeExp))%>% 
-  filter(lifeExp_change<0)
+  group_by(country) %>% 
+  mutate(lifeExp_change = lifeExp - lag(lifeExp)) %>% 
+  filter(lifeExp_change < 0)
 ```
 
+<!-- BMW: Great work! Just need to group by country so that you don't compute changes across multiple countries. -->
+
 ## 1.4
+
 Filter gapminder so that it shows the max GDP per capita experienced by each country.  
 
 Hint: you might find the max() function useful here.
+
 ```{r}
 gapminder %>% 
   select(country, gdpPercap) %>% 
   group_by(country) %>% 
-  filter(gdpPercap== max(gdpPercap))
+  filter(gdpPercap == max(gdpPercap))
 ```
 
 ## 1.5
+
 Produce a scatterplot of Canada’s life expectancy vs. GDP per capita using ggplot2, without defining a new variable. That is, after filtering the gapminder data set, pipe it directly into the ggplot() function. In your plot, put GDP per capita on a log scale.
+
 ```{r}
 gapminder %>% 
   filter(country == "Canada") %>%  
   ggplot(aes(lifeExp, gdpPercap)) +
-  geom_point()+
+  geom_point() +
   scale_y_log10("GDP per Capita", labels = scales::dollar_format(largest_with_cents = 1)) +
   xlab('Life Expectancy') +
   ggtitle("Canada's Life Expectancy by GDP per Capita")
 ```
 
 # Exercise 2: Explore two variables with dplyr and ggplot2
+
 Use palmerpenguins::penguins or another dataset of your choice. (Check out a dataset from the datasets R package if you want!)
 
 ## 2.1
+
 Pick two quantitative variables to explore.  
 
 1. Make a summary table of descriptive statistics for these variables using summarize().
    * Include whatever staistics you feel appropriate (mean, median sd, range, etc.).
 2. Make a scatterplot of these variables using ggplot().
+
 ```{r}
-palmerpenguins::penguins%>% 
-  summarize(across(c(flipper_length_mm, body_mass_g),
-            list(mean=mean, sd=sd), na.rm=TRUE))
+palmerpenguins::penguins %>% 
+  summarize(
+    across(
+      c(flipper_length_mm, body_mass_g),
+      list(mean=mean, sd=sd), 
+      na.rm=TRUE
+    )
+  ) # BMW: Breaking across lines like this can make your code easier to read.
     
 ggplot(palmerpenguins::penguins, aes(body_mass_g, flipper_length_mm))+
   geom_point() +
-    ggtitle("Penguin Body Mass by Flipper Length") +
-    xlab("Body Mass (g)") +
+  ggtitle("Penguin Body Mass by Flipper Length") +
+  xlab("Body Mass (g)") +
   ylab("Flipper Length (mm)")
 ```
 
@@ -92,21 +116,25 @@ Pick one categorical variable and one quantitative variable to explore.
 
 1. Make a summary table giving the sample size (hint: n()) and descriptive statistics for the quantitative variable by group.
 2. Make one or more useful plots to visualize these variables.
+
 ```{r}
 palmerpenguins::penguins%>% 
   group_by(species) %>% 
-  summarize(mass_mean=mean(body_mass_g, na.rm=TRUE),
-            mas_sd=sd(body_mass_g, na.rm=TRUE), N=n()) 
+  summarize(mass_mean = mean(body_mass_g, na.rm=TRUE),
+            mass_sd = sd(body_mass_g, na.rm=TRUE), 
+            N = n()
+  ) 
 
 palmerpenguins::penguins%>% 
-ggplot(aes(species, body_mass_g, fill=species))+
-  geom_boxplot() +
-scale_fill_viridis_d() +
-    geom_jitter() +
-    theme(legend.position="none") +
-    ggtitle("Penguin Body Mass") +
-    xlab("Species") +
-  ylab("Body Mass (g)")
+  ggplot(aes(x = species, y = body_mass_g))+
+  scale_fill_viridis_d() +
+  scale_color_viridis_d() +
+  geom_jitter(height = 0, width = .2, alpha = .5, aes(color = species, fill = species)) + # BMW: When you use geom_jitter with one categorical and one continuous variable, it's best not to add any noise on the axis with teh continuous variable. Do that here by adding height = 0
+  geom_boxplot(color = "black", fill = "transparent") +
+  theme(legend.position = "none") +
+  ggtitle("Penguin Body Mass") +
+  xlab("Species") +
+  ylab("Body Mass (g)") # BMW: Very nice work! See a few other tweaks that might make things look a bit cleaner.
 ```
 
 # Bonus Exercise: Recycling (Optional)
@@ -116,3 +144,5 @@ Evaluate this code and describe the result. The goal was to get the data for Rwa
 
 
 The above code would not work as written because it is requesting that R find the vector called 'country' within the data that is exactly equal to c("Rwanda", "Afghanistan"). Instead, the correct way to filter the data for Rwanda and Afghanistan would be as follows: `filter(gapminder, country %in% c("Rwanda" and "Afghanistan")).` This tells R to filter from the 'gapminder' object the elements "Rwanda" and "Afghanistan" within the vector 'country'.
+
+<!-- BMW: Great! -->
