@@ -33,8 +33,8 @@ lotr
 2. Widen the data so that we see the words spoken by each species, by putting species as its own column.
 
 ```{r}
-(lotr_wide <- lotr %>% 
-  pivot_wider(id_cols = c(Film, Gender), 
+(lotr_wide <- lotr %>%
+   pivot_wider(id_cols = c(Film, Gender), 
               names_from = Species, 
               values_from = Words))
 ```
