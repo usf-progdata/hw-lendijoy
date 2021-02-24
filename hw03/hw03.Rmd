@@ -31,7 +31,8 @@ For your assignment, do the following.
   1. Inspect the item responses (e.g., with graphs or by summarizing distinct values). 
      Is anything unusual?
 ```{r}
-summary(green_data)
+green_data %>% 
+summary()
 ```
 
 Several variables appear to have missing values coded as -99, so we will remove those.
