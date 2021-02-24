@@ -21,9 +21,8 @@ green_data <- readr::read_csv("green_data.csv")
 
 Load necessary libraries.
 ```{r}
-dictionary <- readr::read_csv("green_dictionary.csv")
-green_data <- readr::read_csv("green_data.csv")
 library(dplyr)
+library(ggplot2)
 ```
 
 For your assignment, do the following.
@@ -35,10 +34,11 @@ green_data %>%
 summary()
 ```
 
-Several variables appear to have missing values coded as -99, so we will remove those.
+Several variables appear to have missing values coded as -99, so we will remove those. We will also recode student into a factor variable.
 
 ```{r}
 green_data <- na_if(green_data, "-99") 
+green_data$student <- recode_factor(green_data$student, '1' = "not student", '2' = "student")
 summary(green_data)
 ```
 
@@ -50,8 +50,15 @@ reverse <- function(x) (6 - x)
 green_data_comp <- green_data %>% 
    rowwise() %>% 
   mutate(across(c(green2, comp6:comp10, intel7:intel10, open7:open10), reverse)) %>% 
-  mutate(green_mean = mean(c_across(starts_with("g")), na.rm = TRUE), comp_mean = mean(c_across(starts_with("c")), na.rm = TRUE), intel_mean = mean(c_across(intel1:intel10), na.rm = TRUE), open_mean = mean(c_across(starts_with("o")), na.rm = TRUE)) %>% 
+  mutate(green_mean = mean(c_across(starts_with("g")), na.rm = TRUE), 
+         comp_mean = mean(c_across(starts_with("c")), na.rm = TRUE), 
+         intel_mean = mean(c_across(intel1:intel10), na.rm = TRUE), 
+         open_mean = mean(c_across(starts_with("o")), na.rm = TRUE)) %>% 
   ungroup()
+```
+
+Now let's take a look at the new dataframe.
+```{r}
 green_data_comp
 ```
 
@@ -59,14 +66,26 @@ green_data_comp
      Name the rescaled variables `*_pomp`.   
      *I wasn't sure if this should be all variables or just the composite variables.*
 ```{r}
-pomp <- function(x) ((x - 1) / (5 - 1) * 100)
-green_data_comp <- green_data_comp %>% 
+green_data_pomp <- select(green_data_comp, c(id, student:open_mean)) %>% 
  rowwise() %>% 
-  mutate(across(c(ends_with("mean")), pomp, .names = "{.col}_pomp ")) %>% 
+  mutate(across(c(ends_with("mean")), ~((.x - 1) / (5 - 1) * 100), .names = "{.col}_pomp ")) %>% 
   ungroup()
+green_data_pomp
 ```
      
   4. Make plots that illustrate the distributions of the 4 POMP-scored variables.
+```{r}
+green_data_pomp
+ggplot(green_data_pomp,
+  aes(green_data_pomp$open_mean_pomp)) +
+  geom_histogram(binwidth = 1)
+
+ggplot(green_data_pomp,
+  aes(comp_mean)) +
+  geom_histogram(binwidth = .5)
+
+```
+  
   5. Make scatterplots showing the relationships between **green reputation** and each personality trait.
      Include trend lines for **students** and **non-students**.
      What do these plots show?
