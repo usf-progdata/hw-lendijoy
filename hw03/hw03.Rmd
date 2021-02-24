@@ -1,9 +1,18 @@
+---
+title: "Green behavior and personality report"
+author: "Lendi N. Joy"
+date: "2/22/2021"
+output: 
+  html_document:
+    md_document:
+      variant: markdown_github
+--- 
 # Homework 03
 
 You will analyze data looking at the relationship between **green reputation** and three personality traits--**compassion**, **intellectual curiosity**, and **openness to experiences**.
 The dataset includes data from **students** and **non-students**.
 
-<<<<<<< HEAD
+
 Load the data.
 ```{r}
 dictionary <- readr::read_csv("green_dictionary.csv")
@@ -12,11 +21,8 @@ green_data <- readr::read_csv("green_data.csv")
 
 Load necessary libraries.
 ```{r}
-=======
-```{r}
 dictionary <- readr::read_csv("green_dictionary.csv")
 green_data <- readr::read_csv("green_data.csv")
->>>>>>> 89dd88b575bcfe1c97bb300e478ef3bca60148c9
 library(dplyr)
 ```
 
@@ -27,7 +33,7 @@ For your assignment, do the following.
 ```{r}
 summary(green_data)
 ```
-<<<<<<< HEAD
+
 Several variables appear to have missing values coded as -99, so we will remove those.
 
 ```{r}
@@ -36,7 +42,8 @@ summary(green_data)
 ```
 
   2. Compute total scores for the four scales. 
-     Recode variables as needed.
+     Recode variables as needed.   
+     *I wasn't sure if this should be a sum or mean*
 ```{r}
 reverse <- function(x) (6 - x)
 green_data_comp <- green_data %>% 
@@ -44,20 +51,20 @@ green_data_comp <- green_data %>%
   mutate(across(c(green2, comp6:comp10, intel7:intel10, open7:open10), reverse)) %>% 
   mutate(green_mean = mean(c_across(starts_with("g")), na.rm = TRUE), comp_mean = mean(c_across(starts_with("c")), na.rm = TRUE), intel_mean = mean(c_across(intel1:intel10), na.rm = TRUE), open_mean = mean(c_across(starts_with("o")), na.rm = TRUE)) %>% 
   ungroup()
+green_data_comp
 ```
 
   3. Rescale the variables so that they go from 0-100 instead of the original range.
-     Name the recaled variables `*_pomp`.
+     Name the rescaled variables `*_pomp`.   
+     *I wasn't sure if this should be all variables or just the composite variables.*
 ```{r}
-
+pomp <- function(x) ((x - 1) / (5 - 1) * 100)
+green_data_comp <- green_data_comp %>% 
+ rowwise() %>% 
+  mutate(across(c(ends_with("mean")), pomp, .names = "{.col}_pomp ")) %>% 
+  ungroup()
 ```
      
-=======
-  2. Compute total scores for the four scales. 
-     Recode variables as needed.
-  3. Rescale the variables so that they go from 0-100 instead of the original range.
-     Name the recaled variables `*_pomp`.
->>>>>>> 89dd88b575bcfe1c97bb300e478ef3bca60148c9
   4. Make plots that illustrate the distributions of the 4 POMP-scored variables.
   5. Make scatterplots showing the relationships between **green reputation** and each personality trait.
      Include trend lines for **students** and **non-students**.
