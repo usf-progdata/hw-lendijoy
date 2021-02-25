@@ -13,21 +13,21 @@ You will analyze data looking at the relationship between **green reputation** a
 The dataset includes data from **students** and **non-students**.
 
 
-Load the data.
+## Load the data.
 ```{r}
 dictionary <- readr::read_csv("green_dictionary.csv")
 green_data <- readr::read_csv("green_data.csv")
 ```
 
-Load necessary libraries.
+## Load necessary libraries.
 ```{r}
 library(dplyr)
 library(ggplot2)
 ```
 
-For your assignment, do the following.
+## For your assignment, do the following.
 
-  1. Inspect the item responses (e.g., with graphs or by summarizing distinct values). 
+###  1. Inspect the item responses (e.g., with graphs or by summarizing distinct values). 
      Is anything unusual?
 ```{r}
 green_data %>% 
@@ -42,14 +42,13 @@ green_data$student <- recode_factor(green_data$student, '1' = "not student", '2'
 summary(green_data)
 ```
 
-  2. Compute total scores for the four scales. 
+###  2. Compute total scores for the four scales. 
      Recode variables as needed.   
      *I wasn't sure if this should be a sum or mean*
 ```{r}
-reverse <- function(x) (6 - x)
 green_data_comp <- green_data %>% 
    rowwise() %>% 
-  mutate(across(c(green2, comp6:comp10, intel7:intel10, open7:open10), reverse)) %>% 
+  mutate(across(c(green2, comp6:comp10, intel7:intel10, open7:open10), ~(6 - .x))) %>% 
   mutate(green_mean = mean(c_across(starts_with("g")), na.rm = TRUE), 
          comp_mean = mean(c_across(starts_with("c")), na.rm = TRUE), 
          intel_mean = mean(c_across(intel1:intel10), na.rm = TRUE), 
@@ -62,34 +61,113 @@ Now let's take a look at the new dataframe.
 green_data_comp
 ```
 
-  3. Rescale the variables so that they go from 0-100 instead of the original range.
+###  3. Rescale the variables so that they go from 0-100 instead of the original range.
      Name the rescaled variables `*_pomp`.   
      *I wasn't sure if this should be all variables or just the composite variables.*
 ```{r}
 green_data_pomp <- select(green_data_comp, c(id, student:open_mean)) %>% 
  rowwise() %>% 
-  mutate(across(c(ends_with("mean")), ~((.x - 1) / (5 - 1) * 100), .names = "{.col}_pomp ")) %>% 
+  mutate(across(c(ends_with("mean")), ~((.x - 1) / (5 - 1) * 100), .names = "{.col}_pomp")) %>% 
   ungroup()
 green_data_pomp
 ```
      
-  4. Make plots that illustrate the distributions of the 4 POMP-scored variables.
+###  4. Make plots that illustrate the distributions of the 4 POMP-scored variables.
+
 ```{r}
-green_data_pomp
-ggplot(green_data_pomp,
-  aes(green_data_pomp$open_mean_pomp)) +
-  geom_histogram(binwidth = 1)
-
-ggplot(green_data_pomp,
-  aes(comp_mean)) +
-  geom_histogram(binwidth = .5)
-
+green_data_pomp %>% 
+ggplot(
+  aes(green_mean_pomp)) +
+  geom_histogram(binwidth = 5) +
+  xlab("Green Score") +
+  ggtitle("Distribution of Green Reputation")
 ```
+Green reputation score appears to be relatively normally distributed.
+
+```{r}
+green_data_pomp %>% 
+ggplot(
+  aes(comp_mean_pomp)) +
+  geom_histogram(binwidth = 3) +
+  xlab("Trait Compassion Score") +
+  ggtitle("Distribution of Trait Compassion")
+```
+Trait compassion has a slight left skew, but overall appears to be normally distributed. There may possibly a few outliers to examine.  
+
+```{r}
+green_data_pomp %>% 
+ggplot(
+  aes(intel_mean_pomp)) +
+  geom_histogram(binwidth = 2.5) +
+  xlab("Intellectual Curiosity Score") +
+  ggtitle("Distribution of Intellectual Curiosity")
+```
+Trait intellectual curiosity appears normally distributed.
+
+```{r}
+green_data_pomp %>% 
+ggplot(
+  aes(open_mean_pomp)) +
+  geom_histogram(binwidth = 2.5) +
+  xlab("Trait Openness Score") +
+  ggtitle("Distribution of Trait Openness")
+```
+Trait openness appears mostly normally distributed. There may be a few outliers on the lower end to examine.
   
-  5. Make scatterplots showing the relationships between **green reputation** and each personality trait.
+###  5. Make scatterplots showing the relationships between **green reputation** and each personality trait.
      Include trend lines for **students** and **non-students**.
      What do these plots show?
-  6. Compare **green reputation** for students and non-students using a **rainfall plot** (bar + density + data points).
-  7. Compute a summary table of means, SDs, medians, minima, and maxima for the four total scores for students and non-students.
+     
+```{r}
+green_data_pomp %>% 
+  filter(!is.na(student)) %>% 
+    ggplot(aes(green_mean_pomp, comp_mean_pomp, color = student)) +
+  geom_point() +
+  geom_smooth(method="lm",se = FALSE) +
+  ggtitle("Green Reputation by Trait Compassion") +
+  xlab("Green Reputation") +
+  ylab("Trait Compassion")
+```
+Students appear to be slightly higher on trait compassion than non-students. Although it appears that there may be an interaction effect of student status on the relationship between trait compassion and green reputation such that non-students score higher than students on trait compassion when green reputation is low, but lower on trait compassion when green reputation is higher. 
+
+```{r}
+green_data_pomp %>% 
+  filter(!is.na(student)) %>% 
+    ggplot(aes(green_mean_pomp, intel_mean_pomp, color = student)) +
+  geom_point() +
+  geom_smooth(method="lm",se = FALSE) +
+  ggtitle("Green Reputation by Intellectual Curiosity") +
+  xlab("Green Reputation") +
+  ylab("Intellectual Curiosity")
+```
+Non-students appear to be slightly higher on intellectual curiosity than students. Although it appears that there may be an interaction effect of student status on the relationship between intellectual curiosity and green reputation such that non-students score lower than students on intellectual curiosity when green reputation is low, while students are higher on trait compassion than non-students when green reputation is higher. 
+
+```{r}
+green_data_pomp %>% 
+  filter(!is.na(student)) %>% 
+    ggplot(aes(green_mean_pomp, open_mean_pomp, color = student)) +
+  geom_point() +
+  geom_smooth(method="lm",se = FALSE) +
+  ggtitle("Green Reputation by Trait Openness") +
+  xlab("Green Reputation") +
+  ylab("Trait Openness")
+```
+Students appear to be slightly higher on trait openness than non-students. Although it appears that there may be an interaction effect of student status on the relationship between trait openness and green reputation such that non-students score higher than students on trait openness when green reputation is low, but lower on trait openness when green reputation is higher. 
+
+###  6. Compare **green reputation** for students and non-students using a **rainfall plot** (bar + density + data points).
+
+###  7. Compute a summary table of means, SDs, medians, minima, and maxima for the four total scores for students and non-students.
+```{r}
+green_data_pomp %>% 
+    filter(!is.na(student)) %>% 
+  group_by(student) %>% 
+  summarize(
+    across(
+      c(green_mean_pomp:open_mean_pomp),
+      list(mean = mean, sd = sd, meadian = median()), 
+      na.rm=TRUE
+    )
+  )
+```
   
 In your assignment, prepare an RMarkdown file that includes both the coding and (for 4-7) narrative descriptions of your results.
