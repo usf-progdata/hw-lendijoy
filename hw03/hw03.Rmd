@@ -156,18 +156,16 @@ Students appear to be slightly higher on trait openness than non-students. Altho
 
 ###  6. Compare **green reputation** for students and non-students using a **rainfall plot** (bar + density + data points).
 
+
 ###  7. Compute a summary table of means, SDs, medians, minima, and maxima for the four total scores for students and non-students.
 ```{r}
 green_data_pomp %>% 
     filter(!is.na(student)) %>% 
   group_by(student) %>% 
-  summarize(
-    across(
-      c(green_mean_pomp:open_mean_pomp),
-      list(mean = mean, sd = sd, meadian = median()), 
-      na.rm=TRUE
-    )
-  )
+  summarize(across(c(green_mean_pomp:open_mean_pomp),
+      list(mean = ~mean(., na.rm=TRUE), sd = ~sd(., na.rm=TRUE), 
+           meadian = ~median(., na.rm=TRUE), min = ~min(., na.rm=TRUE), 
+           max = ~max(., na.rm=TRUE))))
 ```
   
 In your assignment, prepare an RMarkdown file that includes both the coding and (for 4-7) narrative descriptions of your results.
