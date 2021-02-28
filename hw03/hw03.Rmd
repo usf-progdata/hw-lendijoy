@@ -3,9 +3,9 @@ title: "Green behavior and personality report"
 author: "Lendi N. Joy"
 date: "2/22/2021"
 output: 
-  html_document:
-    md_document:
-      variant: markdown_github
+  html_document: default
+  github_document: default
+    
 --- 
 # Homework 03
 
@@ -82,6 +82,7 @@ ggplot(
   xlab("Green Score") +
   ggtitle("Distribution of Green Reputation")
 ```
+
 Green reputation score appears to be relatively normally distributed.
 
 ```{r}
@@ -92,6 +93,7 @@ ggplot(
   xlab("Trait Compassion Score") +
   ggtitle("Distribution of Trait Compassion")
 ```
+
 Trait compassion has a slight left skew, but overall appears to be normally distributed. There may possibly a few outliers to examine.  
 
 ```{r}
@@ -102,6 +104,7 @@ ggplot(
   xlab("Intellectual Curiosity Score") +
   ggtitle("Distribution of Intellectual Curiosity")
 ```
+
 Trait intellectual curiosity appears normally distributed.
 
 ```{r}
@@ -112,6 +115,7 @@ ggplot(
   xlab("Trait Openness Score") +
   ggtitle("Distribution of Trait Openness")
 ```
+
 Trait openness appears mostly normally distributed. There may be a few outliers on the lower end to examine.
   
 ###  5. Make scatterplots showing the relationships between **green reputation** and each personality trait.
@@ -128,6 +132,7 @@ green_data_pomp %>%
   xlab("Green Reputation") +
   ylab("Trait Compassion")
 ```
+
 Students appear to be slightly higher on trait compassion than non-students. Although it appears that there may be an interaction effect of student status on the relationship between trait compassion and green reputation such that non-students score higher than students on trait compassion when green reputation is low, but lower on trait compassion when green reputation is higher. 
 
 ```{r}
@@ -140,6 +145,7 @@ green_data_pomp %>%
   xlab("Green Reputation") +
   ylab("Intellectual Curiosity")
 ```
+
 Non-students appear to be slightly higher on intellectual curiosity than students. Although it appears that there may be an interaction effect of student status on the relationship between intellectual curiosity and green reputation such that non-students score lower than students on intellectual curiosity when green reputation is low, while students are higher on trait compassion than non-students when green reputation is higher. 
 
 ```{r}
@@ -152,10 +158,22 @@ green_data_pomp %>%
   xlab("Green Reputation") +
   ylab("Trait Openness")
 ```
+
 Students appear to be slightly higher on trait openness than non-students. Although it appears that there may be an interaction effect of student status on the relationship between trait openness and green reputation such that non-students score higher than students on trait openness when green reputation is low, but lower on trait openness when green reputation is higher. 
 
 ###  6. Compare **green reputation** for students and non-students using a **rainfall plot** (bar + density + data points).
-
+```{r}
+green_data_pomp %>% 
+  filter(!is.na(student)) %>% 
+  ggplot() +
+  aes(y = student, x = green_mean_pomp, fill = student, color = student) +
+  geom_jitter(height =.15) +
+  geom_boxplot(color = "black", alpha = .4, width = .3, size = .8) +
+  xlab("Green Reputation") +
+  ggdist::stat_slab(height = .4, color = "black", size = .2,
+                    alpha = .5,
+                    position = position_nudge(y = .3))
+```
 
 ###  7. Compute a summary table of means, SDs, medians, minima, and maxima for the four total scores for students and non-students.
 ```{r}
