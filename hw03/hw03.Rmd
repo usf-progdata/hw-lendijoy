@@ -41,9 +41,9 @@ green_data$student <- recode_factor(green_data$student, '1' = "not student", '2'
 summary(green_data)
 ```
 
-###  2. Compute total scores for the four scales. 
-     Recode variables as needed.   
-*I wasn't sure if this should be a sum or mean and since 'id' starts with "i", we had to use a different method to compute the composite score.*
+###  2. Compute total scores for the four scales.  
+Recode variables as needed. [^1]   
+
 ```{r}
 green_data_comp <- green_data %>% 
    rowwise() %>% 
@@ -62,8 +62,8 @@ green_data_comp
 ```
 
 ###  3. Rescale the variables so that they go from 0-100 instead of the original range.
-     Name the rescaled variables `*_pomp`.   
-*I wasn't sure if this should be all variables or just the composite variables.*
+Name the rescaled variables `*_pomp`. [^2]   
+
 ```{r}
 green_data_pomp <- select(green_data_comp, c(id, student:openM)) %>% 
  rowwise() %>% 
@@ -192,7 +192,7 @@ green_data_pomp %>%
 
 This works, but it doesn't look the best...
 
-So, let's create a nicer table.  
+So, let's create a nicer table for the HTML page.  
 
 1. First, load the 'table1' package.
 
@@ -216,11 +216,6 @@ table1(~greenM_pomp + compM_pomp + intelM_pomp + openM_pomp | student,
        data = green_data_pomp, render.missing = NULL)
 ```
 
-```{r}
-library(arsenal)
-sum_tbl <- tableby(student ~ greenM_pomp + compM_pomp + intelM_pomp + openM_pomp,
-        data = green_data_pomp, 
-        control = tableby.control(test = FALSE, 
-              numeric.stats = c("mean", "sd", "median", "min", "max")))
-summary(sum_tbl)
-```
+
+[^1]: I wasn't sure if this should be a sum or mean and since 'id' starts with "i", we had to use a different method to compute the composite score.
+[^2]: I wasn't sure if this should be all variables or just the composite variables.
