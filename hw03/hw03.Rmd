@@ -5,7 +5,6 @@ date: "2/22/2021"
 output: 
   html_document: default
   github_document: default
-    
 --- 
 # Homework 03
 
@@ -44,30 +43,32 @@ summary(green_data)
 
 ###  2. Compute total scores for the four scales. 
      Recode variables as needed.   
-     *I wasn't sure if this should be a sum or mean*
+*I wasn't sure if this should be a sum or mean and since 'id' starts with "i", we had to use a different method to compute the composite score.*
 ```{r}
 green_data_comp <- green_data %>% 
    rowwise() %>% 
   mutate(across(c(green2, comp6:comp10, intel7:intel10, open7:open10), ~(6 - .x))) %>% 
-  mutate(green_mean = mean(c_across(starts_with("g")), na.rm = TRUE), 
-         comp_mean = mean(c_across(starts_with("c")), na.rm = TRUE), 
-         intel_mean = mean(c_across(intel1:intel10), na.rm = TRUE), 
-         open_mean = mean(c_across(starts_with("o")), na.rm = TRUE)) %>% 
+  mutate(greenM = mean(c_across(starts_with("g")), na.rm = TRUE), 
+         compM = mean(c_across(starts_with("c")), na.rm = TRUE), 
+         intelM = mean(c_across(intel1:intel10), na.rm = TRUE), 
+         openM = mean(c_across(starts_with("o")), na.rm = TRUE)) %>% 
   ungroup()
 ```
 
 Now let's take a look at the new dataframe.
+
 ```{r}
 green_data_comp
 ```
 
 ###  3. Rescale the variables so that they go from 0-100 instead of the original range.
      Name the rescaled variables `*_pomp`.   
-     *I wasn't sure if this should be all variables or just the composite variables.*
+*I wasn't sure if this should be all variables or just the composite variables.*
 ```{r}
-green_data_pomp <- select(green_data_comp, c(id, student:open_mean)) %>% 
+green_data_pomp <- select(green_data_comp, c(id, student:openM)) %>% 
  rowwise() %>% 
-  mutate(across(c(ends_with("mean")), ~((.x - 1) / (5 - 1) * 100), .names = "{.col}_pomp")) %>% 
+  mutate(across(c(greenM:openM), ~((.x - 1) / (5 - 1) * 100), 
+                .names = "{.col}_pomp")) %>% 
   ungroup()
 green_data_pomp
 ```
@@ -77,7 +78,7 @@ green_data_pomp
 ```{r}
 green_data_pomp %>% 
 ggplot(
-  aes(green_mean_pomp)) +
+  aes(greenM_pomp)) +
   geom_histogram(binwidth = 5) +
   xlab("Green Score") +
   ggtitle("Distribution of Green Reputation")
@@ -88,7 +89,7 @@ Green reputation score appears to be relatively normally distributed.
 ```{r}
 green_data_pomp %>% 
 ggplot(
-  aes(comp_mean_pomp)) +
+  aes(compM_pomp)) +
   geom_histogram(binwidth = 3) +
   xlab("Trait Compassion Score") +
   ggtitle("Distribution of Trait Compassion")
@@ -99,7 +100,7 @@ Trait compassion has a slight left skew, but overall appears to be normally dist
 ```{r}
 green_data_pomp %>% 
 ggplot(
-  aes(intel_mean_pomp)) +
+  aes(intelM_pomp)) +
   geom_histogram(binwidth = 2.5) +
   xlab("Intellectual Curiosity Score") +
   ggtitle("Distribution of Intellectual Curiosity")
@@ -110,7 +111,7 @@ Trait intellectual curiosity appears normally distributed.
 ```{r}
 green_data_pomp %>% 
 ggplot(
-  aes(open_mean_pomp)) +
+  aes(openM_pomp)) +
   geom_histogram(binwidth = 2.5) +
   xlab("Trait Openness Score") +
   ggtitle("Distribution of Trait Openness")
@@ -125,7 +126,7 @@ Trait openness appears mostly normally distributed. There may be a few outliers 
 ```{r}
 green_data_pomp %>% 
   filter(!is.na(student)) %>% 
-    ggplot(aes(green_mean_pomp, comp_mean_pomp, color = student)) +
+    ggplot(aes(greenM_pomp, compM_pomp, color = student)) +
   geom_point() +
   geom_smooth(method="lm",se = FALSE) +
   ggtitle("Green Reputation by Trait Compassion") +
@@ -138,7 +139,7 @@ Students appear to be slightly higher on trait compassion than non-students. Alt
 ```{r}
 green_data_pomp %>% 
   filter(!is.na(student)) %>% 
-    ggplot(aes(green_mean_pomp, intel_mean_pomp, color = student)) +
+    ggplot(aes(greenM_pomp, intelM_pomp, color = student)) +
   geom_point() +
   geom_smooth(method="lm",se = FALSE) +
   ggtitle("Green Reputation by Intellectual Curiosity") +
@@ -151,7 +152,7 @@ Non-students appear to be slightly higher on intellectual curiosity than student
 ```{r}
 green_data_pomp %>% 
   filter(!is.na(student)) %>% 
-    ggplot(aes(green_mean_pomp, open_mean_pomp, color = student)) +
+    ggplot(aes(greenM_pomp, openM_pomp, color = student)) +
   geom_point() +
   geom_smooth(method="lm",se = FALSE) +
   ggtitle("Green Reputation by Trait Openness") +
@@ -166,24 +167,60 @@ Students appear to be slightly higher on trait openness than non-students. Altho
 green_data_pomp %>% 
   filter(!is.na(student)) %>% 
   ggplot() +
-  aes(y = student, x = green_mean_pomp, fill = student, color = student) +
+  aes(y = student, x = greenM_pomp, fill = student, color = student) +
   geom_jitter(height =.15) +
-  geom_boxplot(color = "black", alpha = .4, width = .3, size = .8) +
+  geom_boxplot(color = "black", alpha = .3, width = .2, size = .4) +
   xlab("Green Reputation") +
-  ggdist::stat_slab(height = .4, color = "black", size = .2,
+  theme(legend.position = "none") +
+  ggdist::stat_slab(height = .5, color = "black", size = .4,
                     alpha = .5,
-                    position = position_nudge(y = .3))
+                    position = position_nudge(y = .2))
 ```
 
 ###  7. Compute a summary table of means, SDs, medians, minima, and maxima for the four total scores for students and non-students.
+
+We can create a summary table like this:
 ```{r}
 green_data_pomp %>% 
-    filter(!is.na(student)) %>% 
+  filter(!is.na(student)) %>% 
   group_by(student) %>% 
-  summarize(across(c(green_mean_pomp:open_mean_pomp),
-      list(mean = ~mean(., na.rm=TRUE), sd = ~sd(., na.rm=TRUE), 
-           meadian = ~median(., na.rm=TRUE), min = ~min(., na.rm=TRUE), 
-           max = ~max(., na.rm=TRUE))))  
+  summarize(across(c(greenM_pomp:openM_pomp),
+                   list(mean = ~mean(., na.rm=TRUE), sd = ~sd(., na.rm=TRUE), 
+                        meadian = ~median(., na.rm=TRUE), min = ~min(., na.rm=TRUE), 
+                        max = ~max(., na.rm=TRUE))))
 ```
-  
-In your assignment, prepare an RMarkdown file that includes both the coding and (for 4-7) narrative descriptions of your results.
+
+This works, but it doesn't look the best...
+
+So, let's create a nicer table.  
+
+1. First, load the 'table1' package.
+
+```{r}
+library(table1)
+```
+
+2. Next, we will create variable labels for a more aesthetically pleasing look.
+
+```{r}
+label(green_data_pomp$greenM_pomp) <- "Green Reputation"
+label(green_data_pomp$compM_pomp) <- "Compassion"
+label(green_data_pomp$intelM_pomp) <- "Intellectual Curiosity"
+label(green_data_pomp$openM_pomp) <- "Openness to Experience"
+```
+
+3. Finally, we will compute the summary table and group the results by student status.
+
+```{r}
+table1(~greenM_pomp + compM_pomp + intelM_pomp + openM_pomp | student, 
+       data = green_data_pomp, render.missing = NULL)
+```
+
+```{r}
+library(arsenal)
+sum_tbl <- tableby(student ~ greenM_pomp + compM_pomp + intelM_pomp + openM_pomp,
+        data = green_data_pomp, 
+        control = tableby.control(test = FALSE, 
+              numeric.stats = c("mean", "sd", "median", "min", "max")))
+summary(sum_tbl)
+```
