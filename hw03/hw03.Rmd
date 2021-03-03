@@ -3,8 +3,8 @@ title: "Green behavior and personality report"
 author: "Lendi N. Joy"
 date: "2/22/2021"
 output: 
-  html_document: default
   github_document: default
+  html_document: default
 --- 
 # Homework 03
 
