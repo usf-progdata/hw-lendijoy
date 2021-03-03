@@ -3,8 +3,8 @@ title: "Green behavior and personality report"
 author: "Lendi N. Joy"
 date: "2/22/2021"
 output: 
-  html_document: default
   github_document: default
+  html_document: default
 --- 
 # Homework 03
 
@@ -128,7 +128,7 @@ green_data_pomp %>%
   filter(!is.na(student)) %>% 
     ggplot(aes(greenM_pomp, compM_pomp, color = student)) +
   geom_point() +
-  geom_smooth(method="lm",se = FALSE) +
+  geom_smooth(method = "lm", se = FALSE) +
   ggtitle("Green Reputation by Trait Compassion") +
   xlab("Green Reputation") +
   ylab("Trait Compassion")
@@ -141,7 +141,7 @@ green_data_pomp %>%
   filter(!is.na(student)) %>% 
     ggplot(aes(greenM_pomp, intelM_pomp, color = student)) +
   geom_point() +
-  geom_smooth(method="lm",se = FALSE) +
+  geom_smooth(method = "lm", se  =  FALSE) +
   ggtitle("Green Reputation by Intellectual Curiosity") +
   xlab("Green Reputation") +
   ylab("Intellectual Curiosity")
@@ -154,7 +154,7 @@ green_data_pomp %>%
   filter(!is.na(student)) %>% 
     ggplot(aes(greenM_pomp, openM_pomp, color = student)) +
   geom_point() +
-  geom_smooth(method="lm",se = FALSE) +
+  geom_smooth(method = "lm", se = FALSE) +
   ggtitle("Green Reputation by Trait Openness") +
   xlab("Green Reputation") +
   ylab("Trait Openness")
@@ -168,7 +168,7 @@ green_data_pomp %>%
   filter(!is.na(student)) %>% 
   ggplot() +
   aes(y = student, x = greenM_pomp, fill = student, color = student) +
-  geom_jitter(height =.15) +
+  geom_jitter(height = .15) +
   geom_boxplot(color = "black", alpha = .3, width = .2, size = .4) +
   xlab("Green Reputation") +
   theme(legend.position = "none") +
@@ -185,9 +185,9 @@ green_data_pomp %>%
   filter(!is.na(student)) %>% 
   group_by(student) %>% 
   summarize(across(c(greenM_pomp:openM_pomp),
-                   list(mean = ~mean(., na.rm=TRUE), sd = ~sd(., na.rm=TRUE), 
-                        meadian = ~median(., na.rm=TRUE), min = ~min(., na.rm=TRUE), 
-                        max = ~max(., na.rm=TRUE))))
+                   list(mean = ~mean(., na.rm = TRUE), sd = ~sd(., na.rm = TRUE), 
+                        meadian = ~median(., na.rm = TRUE), min = ~min(., na.rm = TRUE),
+                        max = ~max(., na.rm = TRUE))))
 ```
 
 This works, but it doesn't look the best...
