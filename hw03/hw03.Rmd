@@ -12,22 +12,25 @@ You will analyze data looking at the relationship between **green reputation** a
 The dataset includes data from **students** and **non-students**.
 
 
-## Load the data.
+## Load the data
+
 ```{r}
 dictionary <- readr::read_csv("green_dictionary.csv")
 green_data <- readr::read_csv("green_data.csv")
 ```
 
-## Load necessary libraries.
+## Load necessary libraries
+
 ```{r}
 library(dplyr)
 library(ggplot2)
 ```
 
-## For your assignment, do the following.
+## For your assignment, do the following
 
-###  1. Inspect the item responses (e.g., with graphs or by summarizing distinct values). 
+###  1. Inspect the item responses (e.g., with graphs or by summarizing distinct values)
      Is anything unusual?
+     
 ```{r}
 green_data %>% 
 summary()
@@ -48,8 +51,8 @@ Recode variables as needed. [^1]
 green_data_comp <- green_data %>% 
    rowwise() %>% 
   mutate(across(c(green2, comp6:comp10, intel7:intel10, open7:open10), ~(6 - .x))) %>% 
-  mutate(greenM = mean(c_across(starts_with("g")), na.rm = TRUE), 
-         compM = mean(c_across(starts_with("c")), na.rm = TRUE), 
+  mutate(greenM = mean(c_across(starts_with("g")), na.rm = TRUE), # BMW: I would suggest starts_with("green") etc. 
+         compM = mean(c_across(starts_with("c")), na.rm = TRUE), # BMW: In general, for computing composite scores, use the mean rather than the sum. IT's more robust to missing data.
          intelM = mean(c_across(intel1:intel10), na.rm = TRUE), 
          openM = mean(c_across(starts_with("o")), na.rm = TRUE)) %>% 
   ungroup()
@@ -58,11 +61,13 @@ green_data_comp <- green_data %>%
 Now let's take a look at the new dataframe.
 
 ```{r}
-green_data_comp
+green_data_comp # BMW: Don't print out whole data frames in your reports like this.
 ```
 
 ###  3. Rescale the variables so that they go from 0-100 instead of the original range.
 Name the rescaled variables `*_pomp`. [^2]   
+
+<!-- BMW: Nice use of footnotes! -->
 
 ```{r}
 green_data_pomp <- select(green_data_comp, c(id, student:openM)) %>% 
@@ -128,7 +133,7 @@ green_data_pomp %>%
   filter(!is.na(student)) %>% 
     ggplot(aes(greenM_pomp, compM_pomp, color = student)) +
   geom_point() +
-  geom_smooth(method = "lm", se = FALSE) +
+  geom_smooth(method = "lm", se = FALSE) + # BMW: In general, I suggest retaining the uncertainty bands.
   ggtitle("Green Reputation by Trait Compassion") +
   xlab("Green Reputation") +
   ylab("Trait Compassion")
@@ -163,12 +168,13 @@ green_data_pomp %>%
 Students appear to be slightly higher on trait openness than non-students. Although it appears that there may be an interaction effect of student status on the relationship between trait openness and green reputation such that non-students score higher than students on trait openness when green reputation is low, but lower on trait openness when green reputation is higher. 
 
 ###  6. Compare **green reputation** for students and non-students using a **rainfall plot** (bar + density + data points).
+
 ```{r}
 green_data_pomp %>% 
   filter(!is.na(student)) %>% 
   ggplot() +
   aes(y = student, x = greenM_pomp, fill = student, color = student) +
-  geom_jitter(height = .15) +
+  geom_jitter(height = .15) + # BMW: Be sure to include width = 0 to not add noise along the x dimension
   geom_boxplot(color = "black", alpha = .3, width = .2, size = .4) +
   xlab("Green Reputation") +
   theme(legend.position = "none") +
