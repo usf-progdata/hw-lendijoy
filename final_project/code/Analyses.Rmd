@@ -56,12 +56,7 @@ fa.parallel(Motivation_EFA)
 ```
 The parallel analysis suggests that there should be 7 factors.
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+Now, run the EFA.
+```{r}
+fa(Motivation_EFA, nfactors = 7, fm = "pa", rotate = "oblimin")
 ```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
