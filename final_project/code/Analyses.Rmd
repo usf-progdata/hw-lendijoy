@@ -9,21 +9,28 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,
+                      dev = "png",
+                      dpi = 300,
+                      fig.width = 10,
+                      fig.align = "center",
+                      fig.path = here::here("output", "figures"))
 ```
 
-First load the needed libraries.
-```{r}
+### Load the needed libraries.  
+```{r, warning = FALSE, message = FALSE}
 library(tidyverse)
-library(GPArotation)
 library(psych)
+library(GPArotation)
 ```
 
-Second, load the dataset.
+### Load the dataset.   
 ```{r, message = FALSE}
 Motivation <- read_csv(here::here("data", "Activities_and_Mood.csv"))
+
 ```
 
+### Clean the data.  
 Next, clean up the data using variable Q166_7, which indicates whether the survey was completed.
 ```{r}
 Motivation <- 
@@ -36,27 +43,110 @@ Now let's select only the variables needed for the EFA (remove V4 and V5, which 
 ```{r}
 Motivation_EFA <- 
   Motivation %>% 
-  select(VFI.U1:Int_4, -c(V4, V5))
+  select(VFI.U1:Int_4, 
+         -c(V4, V5))  
 ```
 
-After selecting the appropriate variables, I will reverse code the items so that higher scores indicate more positive attitudes.
+##### Reverse code items.  
+After selecting the appropriate variables, I will reverse code the items so that higher scores indicate more positive attitudes. A few items are reverse coded, so exclude those variables from recoding.
 ```{r}
 Motivation_EFA<-  
   8 - Motivation_EFA[, -c(31, 33:35, 52, 57)]
 ```
 
+### Save the dataset.  
+Save the resulting dataset.
 ```{r}
 write.csv(Motivation_EFA,
           here::here("data", "Motivation_EFA.csv"))
 ```
 
-Next, I will run a parallel analysis.
-```{r}
-fa.parallel(Motivation_EFA)
-```
-The parallel analysis suggests that there should be 7 factors.
+### Run the EFA.   
+The original hypothesis is that there will be 7 belief factors, 3 factors indicating attitudes, subjective norms and perceived behavior control, then 1 factor to indicate intention or motivation to volunteer.
 
-Now, run the EFA.
+I start with extracting these 11 factors since this is the original hypothesis.
 ```{r}
-fa(Motivation_EFA, nfactors = 7, fm = "pa", rotate = "oblimin")
+EFAresult1 = factanal(~ ., 
+                      data = Motivation_EFA, 
+                      factors = 11, 
+                      fm = "pa", 
+                      rotation = "oblimin")
+EFAresult1
 ```
+##### Determine number of factors.   
+We look at the sum of squared loadings (SS loadings), which are the eigenvalues. The Kaiser Rule suggests that eigenvalues greater than 1 indicate meaningful factors. This rule, would suggest that there are *10 meaningful* factors.
+
+
+We can look at the item loadings and see that even though ten factors have eigenvalues greater than 1, the items do not load very highly on some of the factors.
+
+###### Use another method to determine number of factors.  
+Next, I will run a parallel analysis and examine the scree plot as another way of determining the number of factors to extract.
+```{r Parallel Analysis, fig.show = "hide"}
+set.seed(13115)
+PA = fa.parallel(Motivation_EFA, 
+                 fa = "fa",
+                 quant = .95)
+```
+
+Instead of displaying the scree plot that is created, I will make a nicer plot of the parallel analysis.
+
+First, create a data frame with the observed values.
+```{r}
+obs = data.frame(PA$fa.values)
+obs$type = c('Observed Data')
+obs$num = c(row.names(obs))
+obs$num = as.numeric(obs$num)
+colnames(obs) = 
+  c('eigenvalue', 
+    'type', 
+    'num')
+```
+
+Next, calculate and save the 95% quantiles for the eigenvalues for the observed data.
+```{r}
+percent = apply(PA$values,
+                2,
+                function(x) 
+                  quantile(x,.95))
+min = as.numeric(nrow(obs))
+min = (4*min) - (min-1)
+max = as.numeric(nrow(obs))
+max = 4*max
+percentile = percent[min:max]
+```
+
+Now create a data frame for the simulated eigenvalues.
+```{r}
+sim = data.frame(percentile)
+sim$type = c('Simulated Data (95th %ile)')
+sim$num = c(row.names(obs))
+sim$num = as.numeric(sim$num)
+colnames(sim) = 
+  c('eigenvalue', 
+    'type', 
+    'num')
+```
+
+After creating the appropriate data frames, I will put them together into one data frame.
+```{r}
+PAdata = rbind(obs,sim)
+```
+
+Create the plot.
+```{r Pretty Scree Plot}
+
+ggplot(PAdata, 
+                  aes(x = num, 
+                      y = eigenvalue, 
+                      shape = type)) +
+geom_line()+
+geom_point(size = 1.5)+
+scale_y_continuous(name = 'Eigenvalue')+
+scale_x_continuous(name = 'Factor Number', 
+                   breaks = min(PAdata$num):max(PAdata$num))+
+scale_shape_manual(values = 
+                     c(16,5)) +
+geom_vline(xintercept = PA$nfact, linetype = 'dashed') +
+  ggtitle("Scree Plot")
+```
+
