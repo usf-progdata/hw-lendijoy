@@ -1,0 +1,67 @@
+---
+title: "Final Project"
+author: "Lendi Nicole Joy"
+date: "5/3/2021"
+output: 
+  github_document: default
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+First load the needed libraries.
+```{r}
+library(tidyverse)
+library(GPArotation)
+library(psych)
+```
+
+Second, load the dataset.
+```{r, message = FALSE}
+Motivation <- read_csv(here::here("data", "Activities_and_Mood.csv"))
+```
+
+Next, clean up the data using variable Q166_7, which indicates whether the survey was completed.
+```{r}
+Motivation <- 
+  Motivation %>% 
+  drop_na("Q166_7")
+```
+There were 149 cases removed.
+
+Now let's select only the variables needed for the EFA (remove V4 and V5, which are attention check items).
+```{r}
+Motivation_EFA <- 
+  Motivation %>% 
+  select(VFI.U1:Int_4, -c(V4, V5))
+```
+
+After selecting the appropriate variables, I will reverse code the items so that higher scores indicate more positive attitudes.
+```{r}
+Motivation_EFA<-  
+  8 - Motivation_EFA[, -c(31, 33:35, 52, 57)]
+```
+
+```{r}
+write.csv(Motivation_EFA,
+          here::here("data", "Motivation_EFA.csv"))
+```
+
+Next, I will run a parallel analysis.
+```{r}
+fa.parallel(Motivation_EFA)
+```
+The parallel analysis suggests that there should be 7 factors.
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
