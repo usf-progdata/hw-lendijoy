@@ -338,3 +338,15 @@ geom_vline(xintercept = PA$nfact, linetype = 'dashed') +
 ```
 
 <img src="C:/Users/lendi/Documents/hw-lendijoy/final_project/output/figuresPretty Scree Plot-1.png" style="display: block; margin: auto;" />
+
+### Rerun EFA.
+
+Now I will rerun the EFA with only 8 factors using the “fa” function
+from the psych package, but I will not print the results just yet.
+
+``` r
+EFAresult2 = fa(Motivation_EFA, 
+                      nfactors = 8, 
+                      fm = "pa", 
+                      rotate = "oblimin")
+```

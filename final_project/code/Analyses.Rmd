@@ -3,18 +3,19 @@ title: "Final Project"
 author: "Lendi Nicole Joy"
 date: "5/3/2021"
 output: 
-  github_document: default
+  word_document: default
   html_document: default
   pdf_document: default
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE,
                       dev = "png",
                       dpi = 300,
                       fig.width = 10,
                       fig.align = "center",
-                      fig.path = here::here("output", "figures"))
+                      fig.path = here::here("output", 
+                                            "figures"))
 ```
 
 ### Load the needed libraries.  
@@ -22,6 +23,7 @@ knitr::opts_chunk$set(echo = TRUE,
 library(tidyverse)
 library(psych)
 library(GPArotation)
+library(flextable)
 ```
 
 ### Load the dataset.   
@@ -150,3 +152,47 @@ geom_vline(xintercept = PA$nfact, linetype = 'dashed') +
   ggtitle("Scree Plot")
 ```
 
+### Rerun EFA.  
+Now I will rerun the EFA with only 8 factors using the "fa" function from the psych package, but I will not print the results just yet.
+```{r}
+EFAresult2 = fa(Motivation_EFA, 
+                      nfactors = 8, 
+                      fm = "pa", 
+                      rotate = "oblimin")
+```
+
+Use the results from the EFA to create a table of the factor loadings.
+```{r message=FALSE}
+table <- function(x, cut) 
+  {loadings <- fa.sort(x)$loadings %>% round(3)
+  loadings[loadings < cut] <- ""
+  tableinfo <- cbind(x$communalities, 
+                    x$complexity) %>%
+    as.data.frame() %>%
+    rename("Communality" = V1,
+           "Complexity" = V2) %>%
+        rownames_to_column("Item")
+  loadings %>%
+    unclass() %>%
+    as.data.frame() %>%
+    rownames_to_column("Item") %>%
+    left_join(tableinfo) %>%
+    mutate(across(where(is.numeric), round, 3))
+  }  
+   
+fa_table <- flextable(table(EFAresult2, .30))
+```
+
+```{r echo=FALSE}
+fa_table %>% 
+set_caption(
+  caption = "EFA Factor Loadings",
+  autonum = TRUE,
+  style = "Table Caption",
+  html_escape = TRUE) %>% 
+  autofit()
+```
+
+```{r include=FALSE}
+save_as_image(x = fa_table, path = here::here("output", "EFA.png"), webshot = "webshot")
+```
